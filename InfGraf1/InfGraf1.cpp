@@ -21,25 +21,71 @@ int init(void) {
 	return 0;
 
 }
+void DrawPyramid(float height, float minX, float maxX, float minZ, float maxZ) {
+	glBegin(GL_QUADS);
+	glVertex3f(minX, 0, minZ);
+	glVertex3f(minX, 0, maxZ);
+	glVertex3f(maxX, 0, maxZ);
+	glVertex3f(maxX, 0, minZ);
+	glEnd();
+	glBegin(GL_TRIANGLE_FAN);
+	// the commond point of the four triangles
+	glVertex3f((maxX - minX / 2), height, (maxZ - minZ / 2));
+	// Base points of each triangle
+	glVertex3f(minX, 0, minZ);
+	glVertex3f(minX, 0, maxZ);
+
+	glVertex3f(minX, 0, maxZ);
+	glVertex3f(maxX, 0, maxZ);
+
+	glVertex3f(maxX, 0, maxZ);
+	glVertex3f(maxX, 0, minZ);
+
+	glVertex3f(maxX, 0, minZ);
+	glVertex3f(minX, 0, minZ);
+
+	glEnd();
+}
 
 void viewPort1() {
+	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(10, 10, 600, 600); // square (as the clipping view)  resolution 200x200 pixels
-
+	glOrtho(10, 10, 600, 600, .000001,10000);
+	gluLookAt(
+		0, 3, 0,
+		0, 0, 0,
+		0, 0, -1
+	);
 	glColor3f(1.0f, 0.0f, 0.0f); //red color
 	glTranslatef(3, 0, 0);
 	glRotatef(realTimeRotate, 0, 1, 0); // rotate 90 degrees
 	glTranslatef(-3, 0, 0);
+	glRotatef(-realTimeRotate*2, 0, 1, 0);
 	glutWireSphere(1.0f, 20.0f, 20.0f);
 }
 void viewPort2() {
+	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	gluPerspective(68,50,0.1,100);
+	gluLookAt(
+		0, 3, 0,
+		0, 0, 0,
+		0, 0, -1
+	);
 	glViewport(900, 200, 500, 500); // square (as the clipping view)  resolution 200x200 pixels
-
 	glColor3f(0.0f, 1.0f, 0.0f); //greencolor
 	glScalef(delta, delta, delta);
 	glutSolidCube(1.0f);
+
+	glColor3f(1.0f, 1.0f, 0.0f); 
+	glTranslatef(alpha, 0, beta);
+
+	DrawPyramid(1.5f, -1, 1, -1, 1);
 }
+
 
 void display(void) {
 
@@ -99,6 +145,9 @@ void keyPressed(unsigned char key, int x, int y) {
 	case '-':
 		delta *= 0.9f;
 		break;
+	case 'r':
+		realTimeRotate = 0;
+		alpha = 0; beta = 0; delta = 1;
 	default:
 		break;
 	}
