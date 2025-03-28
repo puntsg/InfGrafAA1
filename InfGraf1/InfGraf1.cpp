@@ -22,25 +22,36 @@ int init(void) {
 
 }
 void DrawPyramid(float height, float minX, float maxX, float minZ, float maxZ) {
+	// Base
+	glColor3f(1.0f, 1.0f, 1.0f); // blanc
 	glBegin(GL_QUADS);
 	glVertex3f(minX, 0, minZ);
 	glVertex3f(minX, 0, maxZ);
 	glVertex3f(maxX, 0, maxZ);
 	glVertex3f(maxX, 0, minZ);
 	glEnd();
-	glBegin(GL_TRIANGLE_FAN);
-	// the commond point of the four triangles
-	glVertex3f((maxX - minX / 2), height, (maxZ - minZ / 2));
-	// Base points of each triangle
+
+	glBegin(GL_TRIANGLES);
+	float midX = (minX + maxX) / 2.0f;
+	float midZ = (minZ + maxZ) / 2.0f;
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(midX, height, midZ);
 	glVertex3f(minX, 0, minZ);
 	glVertex3f(minX, 0, maxZ);
 
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(midX, height, midZ);
 	glVertex3f(minX, 0, maxZ);
 	glVertex3f(maxX, 0, maxZ);
 
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(midX, height, midZ);
 	glVertex3f(maxX, 0, maxZ);
 	glVertex3f(maxX, 0, minZ);
 
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(midX, height, midZ);
 	glVertex3f(maxX, 0, minZ);
 	glVertex3f(minX, 0, minZ);
 
@@ -52,9 +63,9 @@ void viewPort1() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(10, 10, 600, 600); // square (as the clipping view)  resolution 200x200 pixels
-	glOrtho(10, 10, 600, 600, .000001,10000);
+	glOrtho(-10, 10, -10, 10, -10,10);
 	gluLookAt(
-		0, 3, 0,
+		0, 10, 0,
 		0, 0, 0,
 		0, 0, -1
 	);
@@ -69,14 +80,14 @@ void viewPort2() {
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(68,50,0.1,100);
-	gluLookAt(
-		0, 3, 0,
-		0, 0, 0,
-		0, 0, -1
-	);
 	glViewport(900, 200, 500, 500); // square (as the clipping view)  resolution 200x200 pixels
-	glColor3f(0.0f, 1.0f, 0.0f); //greencolor
+	gluPerspective(60,1,1,100);
+	gluLookAt(
+		5, 5, 5,
+		0, 0, 0,
+		0, 1, 0
+	);
+	glColor3f(0.0f, 1.0f, 1.0f); 
 	glScalef(delta, delta, delta);
 	glutSolidCube(1.0f);
 
@@ -119,12 +130,12 @@ void keyPressed_special(int key, int x, int y) {
 
 	case GLUT_KEY_UP:
 
-		alpha += 1;
+		alpha -= 1;
 		break;
 
 	case GLUT_KEY_DOWN:
 
-		alpha -= 1;
+		alpha += 1;
 		break;
 
 	default:
